@@ -1,0 +1,28 @@
+.menu {
+  /* Сбрасываем браузерные стили */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  /* Задаём горизонтальное направление */
+  display: flex;
+  gap: 16px;
+  background-color: burlywood;
+}
+
+/* Первый уровень вложенности */
+.menu .menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: absolute;
+  top: 110%;
+  left: 0;
+  background-color: aquamarine;
+}
+
+/* Второй уровень вложенности */
+.menu .menu .menu {
+  top: 0;
+  left: 100%;
+}
