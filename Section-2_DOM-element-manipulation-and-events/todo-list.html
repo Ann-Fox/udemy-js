@@ -10,8 +10,20 @@
       integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
       crossorigin="anonymous"
     />
+        <link rel="stylesheet" href="todo-list.css">
+
   </head>
   <body>
+    <nav class="header navbar navbar-dark bg-primary">
+      <a href="#" class="navbar-brand">Navbar</a>
+      <form class="form-inline">
+        <select id="themeSelect" class="form-control form-select  form-control-sm">
+          <option value="default">Theme Default</option>
+          <option value="light">Theme Light</option>
+          <option value="dark">Theme Dark</option>
+        </select>
+      </form>
+    </nav>
     <div class="form-section mt-5">
       <div class="container">
         <div class="row">
@@ -40,6 +52,12 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+    <div class="mt-5">
+      <div class="container">
+        <button class="btn btn-secondary" id="allTasks">Показать все задачи</button>
+        <button class="btn btn-info" id="notCompletedTasks">Показать незавершенные задачи</button>
       </div>
     </div>
     <div class="task-list-section mt-5">

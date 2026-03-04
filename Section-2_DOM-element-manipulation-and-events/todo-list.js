@@ -39,18 +39,90 @@ const tasks = [
         return acc;
     }, {});
 
-    console.log(objOfTasks);
+    // console.log(objOfTasks);
+
+    const themes = {
+        default: {
+            '--base-text-color': '#212529',
+            '--header-bg': '#007bff',
+            '--header-text-color': '#fff',
+            '--default-btn-bg': '#007bff',
+            '--default-btn-text-color': '#fff',
+            '--default-btn-hover-bg': '#0069d9',
+            '--default-btn-border-color': '#0069d9',
+            '--danger-btn-bg': '#dc3545',
+            '--danger-btn-text-color': '#fff',
+            '--danger-btn-hover-bg': '#bd2130',
+            '--danger-btn-border-color': '#dc3545',
+            '--input-border-color': '#ced4da',
+            '--input-bg-color': '#fff',
+            '--input-text-color': '#495057',
+            '--input-focus-bg-color': '#fff',
+            '--input-focus-text-color': '#495057',
+            '--input-focus-border-color': '#80bdff',
+            '--input-focus-box-shadow': '0 0 0 0.2rem rgba(0, 123, 255, 0.25)',
+        },
+        dark: {
+            '--base-text-color': '#212529',
+            '--header-bg': '#343a40',
+            '--header-text-color': '#fff',
+            '--default-btn-bg': '#58616b',
+            '--default-btn-text-color': '#fff',
+            '--default-btn-hover-bg': '#292d31',
+            '--default-btn-border-color': '#343a40',
+            '--default-btn-focus-box-shadow':
+                '0 0 0 0.2rem rgba(141, 143, 146, 0.25)',
+            '--danger-btn-bg': '#b52d3a',
+            '--danger-btn-text-color': '#fff',
+            '--danger-btn-hover-bg': '#88222c',
+            '--danger-btn-border-color': '#88222c',
+            '--input-border-color': '#ced4da',
+            '--input-bg-color': '#fff',
+            '--input-text-color': '#495057',
+            '--input-focus-bg-color': '#fff',
+            '--input-focus-text-color': '#495057',
+            '--input-focus-border-color': '#78818a',
+            '--input-focus-box-shadow': '0 0 0 0.2rem rgba(141, 143, 146, 0.25)',
+        },
+        light: {
+            '--base-text-color': '#212529',
+            '--header-bg': '#fff',
+            '--header-text-color': '#212529',
+            '--default-btn-bg': '#fff',
+            '--default-btn-text-color': '#212529',
+            '--default-btn-hover-bg': '#e8e7e7',
+            '--default-btn-border-color': '#343a40',
+            '--default-btn-focus-box-shadow':
+                '0 0 0 0.2rem rgba(141, 143, 146, 0.25)',
+            '--danger-btn-bg': '#f1b5bb',
+            '--danger-btn-text-color': '#212529',
+            '--danger-btn-hover-bg': '#ef808a',
+            '--danger-btn-border-color': '#e2818a',
+            '--input-border-color': '#ced4da',
+            '--input-bg-color': '#fff',
+            '--input-text-color': '#495057',
+            '--input-focus-bg-color': '#fff',
+            '--input-focus-text-color': '#495057',
+            '--input-focus-border-color': '#78818a',
+            '--input-focus-box-shadow': '0 0 0 0.2rem rgba(141, 143, 146, 0.25)',
+        },
+    };
+
+    let lastSelectedTheme = 'default';
 
     // Elements UI
     const listContainer = document.querySelector('.task-list-section .list-group');
     const form = document.forms['addTask'];
     const inputTitle = form.elements['title'];
     const inputBody = form.elements['body'];
+    const themeSelect = document.querySelector('#themeSelect');
 
     // Events
     renderOfTasks(objOfTasks);// вывести весь список задач на экран
-
-    form.addEventListener('submit', onFormSubmitHendler)// повесить на форму событие submit
+    form.addEventListener('submit', onFormSubmitHendler);// повесить на форму событие submit
+    listContainer.addEventListener('click', onDeleteHandler); // повесить событие на div list-group для удаления задачи
+    listContainer.addEventListener('click', completedHahdler); // повесить событие на div list-group для отметки выполнения задачи
+    themeSelect.addEventListener('change', onThemeSelectHanhdler)
 
     function renderOfTasks(tasksList) {
         if (!tasksList) {
@@ -62,18 +134,6 @@ const tasks = [
         const fragment = document.createDocumentFragment();
         Object.values(tasksList).forEach(task => {
             const li = listItemTEmplate(task)
- 
-            li.addEventListener('click', (e) => {
-                console.log(`start = ${task.completed}`)
-                const t = e.target.classList.contains('btn-success')
-
-                if (t) {
-                    e.target.classList.toggle('btn-warning')
-                    li.classList.toggle('bg-success')
-                    task.completed = !task.completed
-                    return task.completed
-                }
-            })
             fragment.appendChild(li)
         });
 
@@ -84,6 +144,7 @@ const tasks = [
     function listItemTEmplate({ _id, title, body, completed } = {}) {
         const li = document.createElement('li');
         li.classList.add('list-group-item', 'd-flex', 'aling-ittems-center', 'flex-wrap', 'mt-2');
+        li.setAttribute('data-task-id', _id);
 
         const span = document.createElement('span');
         span.textContent = title;
@@ -103,7 +164,8 @@ const tasks = [
 
         if (completed) {
             li.classList.add('bg-success');
-            completedBtn.classList.add('btn-warning')
+            completedBtn.classList.add('btn-warning');
+            completedBtn.textContent = 'Отменить завершение задачи'
         }
 
         li.appendChild(span);
@@ -145,4 +207,70 @@ const tasks = [
         return { ...newTask };
     }
 
+    // Изменение статуса завершения задачи
+    function completedHahdler({ target }) {
+        if (target.classList.contains('btn-success')) {
+            console.log(target)
+            const parent = target.closest('[data-task-id]');
+            const id = parent.dataset.taskId;
+            // const isCompleted = objOfTasks[id].completed;
+            if (!objOfTasks[id].completed) {
+                parent.classList.add('bg-success');
+                target.classList.add('btn-warning');
+                target.textContent = 'Отменить завершение задачи'
+                objOfTasks[id].completed = true
+                return objOfTasks[id].completed
+            } else if (objOfTasks[id].completed) {
+                parent.classList.remove('bg-success');
+                target.classList.remove('btn-warning');
+                target.textContent = 'Done'
+                objOfTasks[id].completed = false;
+                return objOfTasks[id].completed
+            }
+        }
+    }
+
+    // удаление задачи из объекта
+    function deleteTask(id) {
+        const { title } = objOfTasks[id]
+        const isConfirm = confirm(`ВЫ уверены, что хотите удалить задачу ${title}?`);
+        if (!isConfirm) return isConfirm;
+        delete objOfTasks[id];
+        return isConfirm;
+    }
+    // функция для удаления элемента из HTML разметки
+    function deleteTaskFromHTML(el, isConfirm) {
+        if (!isConfirm) return;
+        el.remove()
+    }
+    // фуккция callback при клике на кнопку Delete task
+    function onDeleteHandler({ target }) {
+        if (target.classList.contains('delete-btn')) {
+            const parent = target.closest('[data-task-id]');
+            const id = parent.dataset.taskId;
+            const isConfirm = deleteTask(id);
+            deleteTaskFromHTML(parent, isConfirm)
+        }
+    }
+
+    // обработчик события изменения Select - выпадающий список, получим значение нашего select
+    function onThemeSelectHanhdler() {
+        const selectTheme = themeSelect.value;
+        const isComfirmed = confirm(`Вы действительно хотитк установить тему ${selectTheme}`);
+        if (!isComfirmed) {
+            selectTheme.value = lastSelectedTheme;
+            console.log(selectTheme)
+            return;
+        }
+        setTheme(selectTheme);
+        lastSelectedTheme = selectTheme;
+    }
+    // функция, которая устанавливает тему
+    function setTheme(nameTheme) {
+        const selectedThemeObj = themes[nameTheme];
+        console.log(selectedThemeObj);
+        Object.entries(selectedThemeObj).forEach(([key, value]) => {
+            document.documentElement.style.setProperty(key, value)
+        });
+    }
 })(tasks);
