@@ -108,7 +108,7 @@ const tasks = [
         },
     };
 
-    let lastSelectedTheme = 'default';
+    let lastSelectedTheme = localStorage.getItem('app_theme') || 'default';
 
     // Elements UI
     const listContainer = document.querySelector('.task-list-section .list-group');
@@ -118,6 +118,7 @@ const tasks = [
     const themeSelect = document.querySelector('#themeSelect');
 
     // Events
+    setTheme(lastSelectedTheme)
     renderOfTasks(objOfTasks);// вывести весь список задач на экран
     form.addEventListener('submit', onFormSubmitHendler);// повесить на форму событие submit
     listContainer.addEventListener('click', onDeleteHandler); // повесить событие на div list-group для удаления задачи
@@ -264,6 +265,7 @@ const tasks = [
         }
         setTheme(selectTheme);
         lastSelectedTheme = selectTheme;
+        localStorage.setItem('app_theme', selectTheme)
     }
     // функция, которая устанавливает тему
     function setTheme(nameTheme) {

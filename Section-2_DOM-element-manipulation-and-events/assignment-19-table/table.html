@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assignment 19: Домашнее задание. DOM. Часть №1 - Table</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="table.css" />
+  </head>
+  <body>
+    <div class="table-section mt-5">
+      <div class="table-container container">
+        <!-- <table class="table"> -->
+        <!-- <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Email</th>
+              <th scope="col">Balance</th>
+            </tr>
+          </thead> -->
+        <!-- <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td>Mark</td>
+              <td>Otto</td>
+            </tr>
+            <tr>
+              <th scope="row">2</th>
+              <td>Jacob</td>
+              <td>Thornton</td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td colspan="">Larry the Bird</td>
+              <td colspan="">Larry the Bird</td>
+            </tr>
+            <tr>
+              <td colspan="" class="border-0"></td>
+              <td colspan="" class="border-0"></td>
+              <td colspan="" class="border-0">Total balance: <b>777777</b></td>
+            </tr>
+          </tbody> -->
+        <!-- </table> -->
+      </div>
+    </div>
+    <div class="form-section mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="mx-auto">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card title">Add new user</h5>
+                <form name="addUser">
+                  <input
+                    type="text"
+                    name="nameUser"
+                    id="nameUser"
+                    class="form-control"
+                    placeholder="name"
+                  />
+                  <input
+                    type="text"
+                    name="emailUser"
+                    id="emailUser"
+                    class="form-control mt-3"
+                    placeholder="email"
+                  />
+                  <input
+                    type="text"
+                    name="balanceUser"
+                    id="balanceUser"
+                    class="form-control mt-3"
+                    placeholder="balance"
+                  />
+                  <button class="btn btn-primary mt-4">Add user</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="table.js"></script>
+  </body>
+</html>
