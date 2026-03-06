@@ -47,31 +47,42 @@ const users = [
     return acc;
   }, {})
 
-  // расчитываем сумму balance
-  const calculateBbalance = users.reduce(function (sum, user) {
-    const { balance } = user
-    return sum += balance
-  }, 0);
+  // функция для расчета суммы balance
+  function calculateBalance() {
+    return Object.values(objectOfUsers).reduce((sum, user) => {
+      // console.log(user.balance)
+      return sum + parseFloat(user.balance)
+    }, 0);
+  }
 
   // UI Elements
   const tableContainer = document.querySelector('.table-container');
-  console.log(tableContainer);
+  const form = document.forms['addUser'];
+  const inputNameUser = form.elements['nameUser'];
+  const inputEmailUser = form.elements['emailUser'];
+  const inputBalanceUser = form.elements['balanceUser'];
 
   // Events
-  const cailBalance = createHTMLBalance(calculateBbalance)
+  // const cailBalance = createHTMLBalance(calculateBbalance)
   const tBody = createTbodyElement(objectOfUsers)
   const tHead = createTheadElement();
+  let tFoot = createTfootElement(calculateBalance()) //создаем подвал с текущим балансом
+
   renderTable();
+  form.addEventListener('submit', onFormSubmitHendler); // повесить на форму событие submit
 
   function renderTable() {
     const fragment = document.createDocumentFragment();
     const table = document.createElement('table');
     table.classList.add('table');
+    table.classList.add('table-striped')
 
     table.appendChild(tHead);
     table.appendChild(tBody)
+    table.appendChild(tFoot)
 
     fragment.appendChild(table);
+    tableContainer.innerHTML = ''; //очищаем контейнер перед добавлением
     tableContainer.appendChild(fragment)
   }
 
@@ -96,12 +107,21 @@ const users = [
 
     Object.values(usersList).forEach((user, index) => {
       const tr = trItemTemplate(user, index);
+      
       tBody.appendChild(tr)
+    
     })
 
-    tBody.appendChild(cailBalance)
-
     return tBody
+  }
+
+  function createTfootElement(balance) {
+    const tFoot = document.createElement('tfoot');
+    console.log(tFoot)
+    const tr = createHTMLBalance(balance);
+    console.log(tr)
+    tFoot.appendChild(tr)
+    return tFoot
   }
 
   // создание строки таблицы
@@ -113,12 +133,12 @@ const users = [
 
     const thName = document.createElement('td');
     thName.textContent = name;
-    
+
     const tdEmail = document.createElement('td');
     tdEmail.textContent = email;
 
     const tdBalance = document.createElement('td');
-    tdBalance.textContent = balance;
+    tdBalance.textContent = balance.toFixed(2);
 
     tr.appendChild(th);
     tr.appendChild(thName);
@@ -130,15 +150,79 @@ const users = [
 
   function createHTMLBalance(balance) {
     const tr = document.createElement('tr');
+
     const th = document.createElement('th');
+    th.setAttribute('scope', 'row')
+
+    const tdColspan = document.createElement('td');
+    tdColspan.setAttribute('colspan', '2')
 
     const tdName = document.createElement('td');
-    tdName.textContent = `Total ${balance}`;
-
-    th.appendChild(tdName)
+    tdName.textContent = `Total: ${balance.toFixed(2)}`;
+    // console.log(balance)
     tr.appendChild(th);
+    tr.appendChild(tdColspan)
+    tr.appendChild(tdName)
     return tr
   }
 
+  // функция для добавления подвала с новой суммой
+  function updateTotalBalance() {
+    const newBalance = calculateBalance();
+    const oldTFoot = document.querySelector('tfoot');
+    const newTFoot = createTfootElement(newBalance);
+
+    if (oldTFoot) {
+      oldTFoot.replaceWith(newTFoot);
+      tFoot = newTFoot; //обновляем ссылку
+    }
+  }
+
+  // обработчик события submit для формы
+  function onFormSubmitHendler(e) {
+    e.preventDefault(); // убираем перезагрузку страницы при отправке формы (перезагрузка по умолчанию)
+
+    const nameValue = inputNameUser.value.trim();
+    const emailValue = inputEmailUser.value.trim();
+    const balanceValue = inputBalanceUser.value.trim();
+
+    // проверка на заполнение всех полей
+    if (!nameValue || !emailValue || !balanceValue) {
+      alert("Пожалуйста, заполните все поля");
+      return;
+    }
+
+    // проверка, что баланс является числом
+    if (isNaN(parseFloat(balanceValue))) {
+      alert('Пожалуйста, введите корректное число для баланса');
+      return;
+    }
+
+    const newUser = createNewUser(nameValue, emailValue, balanceValue);
+    const newTr = trItemTemplate(newUser, Object.keys(objectOfUsers).length - 1);
+
+    tBody.appendChild(newTr);
+
+    // обновляем общую сумму в подвале таблицы
+    updateTotalBalance();
+
+    // очищаем поля формы
+    inputNameUser.value = '';
+    inputEmailUser.value = '';
+    inputBalanceUser.value = '';
+  }
+
+  function createNewUser(name, email, balance) {
+    const newUser = {
+      name,
+      email,
+      balance: parseFloat(balance),
+      _id: `user-${Math.random()}`
+    }
+
+    objectOfUsers[newUser._id] = newUser;
+
+    return { ...newUser }
+  }
 
 }(users))
