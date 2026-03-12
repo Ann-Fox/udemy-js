@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>49. Разбор Домашнего Задания. AJAX. Часть №1</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <!-- Получить пользователей (users) от сервера https://jsonplaceholder.typicode.com. Получив ответ от сервера вывести имена пользователей на страницу. При клике на имя пользователя в произвольном месте должна появиться подробная информация о нем. Для визуальной части можно использовать bootstrap или другие фреймворки. -->
+    <section class="users-wrapper mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col col-4">
+            <div class="card">
+              <div class="card-header">Users list</div>
+              <ul class="list-group users-list"></ul>
+            </div>
+          </div>
+          <div class="col col-6">
+            <div class="user-info"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>
+      const apiURL = "https://jsonplaceholder.typicode.com";
+
+      // UI Elements
+      const usersListElement = document.querySelector(".users-list");
+      const userInfoElement = document.querySelector(".user-info");
+
+      // 4. повесить событие клика на список
+      // DOM Events
+      usersListElement.addEventListener("click", onUserClickHandler);
+
+      function onUserClickHandler(e) {
+        e.preventDefault();
+        if (e.target.dataset.userId) {
+          //data-user-id
+          console.log(e.target.dataset.userId);
+          getUserInfoHTTP(e.target.dataset.userId, onGetUserInfoCallback);
+        }
+      }
+
+      // 1. реализовать запрос получения пользователей
+      function getUsersHTTP(callback) {
+        const xhr = new XMLHttpRequest();
+
+        xhr.open("GET", `${apiURL}/users`);
+        xhr.addEventListener("load", () => {
+          const response = JSON.parse(xhr.responseText);
+          if (xhr.status !== 200) {
+            console.error("Error", xhr.status);
+            return;
+          }
+          callback(response);
+        });
+        xhr.send();
+      }
+
+      // 6.делаем запрос на сервер, получаем инфу о пользователе
+      function getUserInfoHTTP(id, callback) {
+        const xhr = new XMLHttpRequest();
+
+        xhr.open("GET", `${apiURL}/users/${id}`);
+        xhr.addEventListener("load", () => {
+          const response = JSON.parse(xhr.responseText);
+          if (xhr.status !== 200) {
+            console.error("Error", xhr.status);
+            return;
+          }
+          // console.log(response);
+          callback(response);
+        });
+        xhr.send();
+      }
+
+      // 7. обработчик на ответ от сервера
+      function onGetUserInfoCallback(user) {
+        console.log(user);
+        renderUserInfo(user);
+      }
+
+      // 2. реализовать обработчик ответа от сервера
+      function onGetUsersCallbak(users) {
+        // console.log(users);
+        if (!users.length) {
+          console.error("Нет массива данных");
+          return;
+        }
+        renderUsersList(users);
+      }
+
+      // 3. реализовать рендер списка пользователей
+      function renderUsersList(users) {
+        const fragment = users.reduce(
+          (acc, user) => acc + userListItemTemplate(user),
+          "",
+        );
+        // console.log(fragment);
+        usersListElement.insertAdjacentHTML("afterbegin", fragment);
+        // users.forEach((user) => {
+        //   const userLi = userListItemTemplate(user);
+        //   usersListElement.insertAdjacentHTML("beforeend", userLi);
+        // });
+      }
+
+      // 8. реализовать рендер инфы о пользователе
+      function renderUserInfo(user) {
+        userInfoElement.innerHTML = "";
+        const template = renderUserInfoTamplate(user);
+        userInfoElement.insertAdjacentHTML("afterbegin", template);
+      }
+
+      function userListItemTemplate(user) {
+        return `
+  <button type="button" class="list-group-item list-group-item-action" data-user-id="${user.id}"">${user.name}</button>
+
+`;
+      }
+
+      function renderUserInfoTamplate(user) {
+        return `
+          <div class="card border-dark mb-3">
+            <div class="card-header">${user.name}</div>
+            <div class="card-body">
+              <h6 class="card-title">${user.email}</h5>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item"><b>nickname:</b> ${user.username}</li>
+                  <li class="list-group-item"><b>company:</b> ${user.company.name}</li>
+                  <li class="list-group-item"><b>website:</b> ${user.website}</li>
+                  <li class="list-group-item"><b>city:</b> ${user.address.city}</li>
+                </ul>
+            </div>
+
+              <div class="card-footer bg-transparent border-success"><b>phone:</b> ${user.phone}</div>
+
+          </div>
+        `;
+      }
+
+      // Init App
+      getUsersHTTP(onGetUsersCallbak);
+    </script>
+  </body>
+</html>

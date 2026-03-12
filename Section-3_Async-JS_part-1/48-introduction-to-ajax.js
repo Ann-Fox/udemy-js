@@ -7,9 +7,7 @@ function getPosts(callback) {
     // console.log(xhr);
     xhr.open('GET', 'https://jsonplaceholder.typicode.com/posts');
     xhr.addEventListener('load', () => {
-        // console.log(xhr.responseText);
         const response = JSON.parse(xhr.responseText);
-        // console.log(response);
         callback(response)
     });
 

@@ -12,6 +12,59 @@
     />
   </head>
   <body>
+    <!-- Assignment 21: Домашнее задание. AJAX. Часть №2 -->
+    <!-- Создать форму добавления пользователя состоящую из следующих полей name, email, phone, website.
+
+При сабмите формы сделать POST запрос на сервер https://jsonplaceholder.typicode.com/users
+
+После ответа от сервера добавлять полученного пользователя на страницу в список.
+
+Для визуализации формы и спискаможете использовать произвольные стили. -->
+    <div class="container mb-3 mt-3">
+      <form class="row g-3" name="add-user">
+        <div class="col-6">
+          <label for="inputPassword4" class="form-label">Name</label>
+          <input
+            name="user-name"
+            type=""
+            class="form-control"
+            id="inputPassword4"
+          />
+        </div>
+        <div class="col-6">
+          <label for="inputEmail4" class="form-label">Email</label>
+          <input
+            name="user-email"
+            type="email"
+            class="form-control"
+            id="inputEmail4"
+          />
+        </div>
+        <div class="col-6">
+          <label for="inputAddress" class="form-label">Phone</label>
+          <input
+            name="user-phone"
+            type="text"
+            class="form-control"
+            id="inputAddress"
+          />
+        </div>
+        <div class="col-6">
+          <label for="inputAddress2" class="form-label">Website</label>
+          <input
+            name="user-website"
+            type="text"
+            class="form-control"
+            id="inputAddress2"
+          />
+        </div>
+        <div class="col-12">
+          <button type="submit" class="btn btn-warning btn-add-user">
+            Add new user
+          </button>
+        </div>
+      </form>
+    </div>
     <h1>Users</h1>
     <div class="container">
       <div class="row">
