@@ -5,6 +5,14 @@
   grid-row-gap: 20px;
 }
 
+.m-0 {
+  margin: 0;
+}
+
+.fixed {
+  position: fixed;
+}
+
 @media (max-width: 1024px) {
   .grid-container {
     grid-template-columns: repeat(1, 1fr);
