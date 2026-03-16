@@ -93,7 +93,7 @@ function getGmail(callback) {
     xhr.open('GET', 'http://gmail.com');
     xhr.addEventListener('load', () => {
         console.log(xhr.responseText);
-    
+
     });
 
     xhr.addEventListener('error', () => {
@@ -103,3 +103,114 @@ function getGmail(callback) {
     xhr.send();
 };
 
+function myHttpRequest({ method, url } = {}, callback) {
+    try {
+        const xhr = new XMLHttpRequest();
+        xhr.open(method, url);
+        xhr.addEventListener('load', () => {
+            if (Math.floor(xhr.status / 100) !== 2) {
+                callback(`Error. Status code: ${xhr.status}`, xhr);
+                return;
+            }
+            const response = JSON.parse(xhr.responseText);
+            callback(null, response);
+        });
+
+        xhr.addEventListener('error', () => {
+            callback(`Error. Status code: ${xhr.status}`, xhr);
+        });
+
+        xhr.send();
+    } catch (error) {
+        callback(error);
+    }
+};
+
+// myHttpRequest(
+//     {
+//         method: 'GET',
+//         url: 'https://jsonplaceholder.typicode.com/posts'
+//     }, (error, response) => {
+//         if (error) {
+//             console.log(error);
+//             return;
+//         }
+//         console.log(response);
+//     })
+
+function http() {
+    return {
+        get(url, callback) {
+            try {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', url);
+                xhr.addEventListener('load', () => {
+                    if (Math.floor(xhr.status / 100) !== 2) {
+                        callback(`Error. Status code: ${xhr.status}`, xhr);
+                        return;
+                    }
+                    const response = JSON.parse(xhr.responseText);
+                    callback(null, response);
+                });
+
+                xhr.addEventListener('error', () => {
+                    callback(`Error. Status code: ${xhr.status}`, xhr);
+                });
+
+                xhr.send();
+            } catch (error) {
+                callback(error);
+            }
+        },
+        post(url, body, headers, callback) {
+            try {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', url);
+                xhr.addEventListener('load', () => {
+                    if (Math.floor(xhr.status / 100) !== 2) {
+                        callback(`Error. Status code: ${xhr.status}`, xhr);
+                        return;
+                    }
+                    const response = JSON.parse(xhr.responseText);
+                    callback(null, response);
+                });
+
+                xhr.addEventListener('error', () => {
+                    callback(`Error. Status code: ${xhr.status}`, xhr);
+                });
+
+                if (headers) {
+                    console.log(headers);
+                    console.log(Object.entries(headers))
+                    Object.entries(headers).forEach(([key, value]) => {
+                        xhr.setRequestHeader(key, value);
+                        console.log(key, value);
+                    })
+                }
+
+                xhr.send(JSON.stringify(body));
+            } catch (error) {
+                callback(error);
+            }
+        },
+    }
+}
+
+const myHttp = http();
+myHttp.post(
+    'https://jsonplaceholder.typicode.com/posts',
+    {
+        title: 'foo',
+        body: 'bar',
+        userId: 1
+    },
+    {
+        'Content-type': 'application/json; charset=UTF-8',
+        'x-auth': 'header value',
+    },
+    (error, response) => {
+        console.log(error, response);
+    }
+)
+
+console.log(myHttp);
