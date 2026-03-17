@@ -63,8 +63,8 @@ const newServece = (function () {
     const apiUrl = 'https://newsapi.org/v2';
 
     return {
-        topHeadlines(country = 'ua', cb) {
-            http.get(`${apiUrl}/top-headlines?country=${country}&category=technology&apiKey=${apiKey}`, cb)
+        topHeadlines(country = 'ua', category = 'business', cb) {
+            http.get(`${apiUrl}/top-headlines?country=${country}&category=${category}&apiKey=${apiKey}`, cb)
         },
         everything(query, cb) {
             http.get(`${apiUrl}/everything?q=${query}&apiKey=${apiKey}
@@ -76,7 +76,8 @@ const newServece = (function () {
 // Element UI
 const form = document.forms['newsControls'];
 const countrySelect = form.elements['country'];
-const searchInput = form.elements['search']
+const categorySelect = form.elements['category'];
+const searchInput = form.elements['search'];
 
 form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -94,10 +95,11 @@ function loadNews() {
     showLoader();
 
     const country = countrySelect.value;
+    const category = categorySelect.value;
     const searchText = searchInput.value;
-
+    console.log(category);
     if (!searchText) {
-        newServece.topHeadlines(country, onGetRasponse)
+        newServece.topHeadlines(country, category, onGetRasponse)
     } else {
         newServece.everything(searchText, onGetRasponse)
         console.log(searchText);
@@ -141,14 +143,13 @@ function renderNews(news) {
     // console.log(fragment);
     newsContainer.insertAdjacentHTML('afterbegin', fragment)
 }
-
 // News item template function
 function newTemplate({ urlToImage, title, url, description }) {
     return `
         <div class="col s12">
             <div class="card">
                 <div class="card-image">
-                    <img src="${urlToImage}" alt="" srcset="" />
+                    <img src="${urlToImage || 'no-img.jpg'}" alt="" srcset="" />
                     <span class="card-title">${title || ''}</span>
                 </div>
                 <div class="card-content">
@@ -196,3 +197,10 @@ function removeLoader() {
         loader.remove();
     }
 }
+
+// Домашнее задание к проекту News App.
+// 1. Добавить в форму селект для выбора категории.
+
+// 2. Добавить обработку формы. При сабмите формы должен отправляться запрос на получение новостей по выбранной категории и стране, если в инпуте search есть какое то значение то нужно делать запрос на everething и передавать то что ввел пользователь.
+
+// 3. Добавить условие. Если у новости нет картинки то подставлять картинку заглушку. Картинку заглушку можете выбрать самостоятельно из интернета.
